@@ -29,14 +29,14 @@ public enum Rank
 }
 
 // 牌型枚举
-public enum HandsCategory
+public enum Category
 {
     SOLO, SOLO_CHAIN, 
     // 单，顺子
     PAIR, PAIR_CHAIN, 
     // 对，连对
     TRIO, TRIO_SOLO, TRIO_PAIR, 
-    // 三个， 三带一，三代二
+    // 三个，三带一，三代二
     AIRPLANE, AIRPLANE_SOLO, AIRPLANE_PAIR,
     // 飞机，飞机带单，飞机带对
     BOMB, QUAD_DUAL_SOLO, QUAL_DUAL_PAIR,
@@ -62,18 +62,9 @@ class Card
         return rank;
     }
 
-    public void setRank(Rank rank) {
-        this.rank = rank;
-    }
-
     public Suit getSuit() {
         return suit;
     }
-
-    public void setSuit(Suit suit) {
-        this.suit = suit;
-    }
-
     
     
 }
@@ -81,10 +72,69 @@ class Card
 // 一手牌
 class Hand
 {
-    private HandsCategory cat;       // 牌型
-    private short         length;    // 长度
-    private ArrayList     content;   // 内容
-    public Hand() {
+    private Category            category;  // 牌型
+    private int                 length;    // 长度
+    private ArrayList<Card>     content;   // 内容
+
+    public Hand(Category cat, int length, ArrayList<Card> content) 
+    {
+        this.category = cat;
+        this.length = length;
+        this.content = content;
     }
+
+    /**
+     * 比较两手牌的大小
+     * 
+     * @param toCompare 要比较的一手牌
+     * @return {@code 0}为类型不匹配，负数为小于，正数为大于
+     */
+    public final int compareTo(Hand toCompare) 
+    {
+        if (toCompare.getCategory() != this.getCategory())
+        {
+            return 0;
+        }
+
+        switch (this.category) {
+            // 比较单牌
+            case SOLO:
+                return (int) toCompare.getContent().get(0).getRank() - (int) this.getContent().get(0).getRank();
+                break;
+            
+            // 比较顺子
+            case SOLO_CHAIN:
+                // 如果长度不一样就不用比
+                if (toCompare.getLength() != this.getLength()) 
+                {
+                    return 0;
+                } 
+                else 
+                {
+                    
+                }
+            default:
+                break;
+        }
+
+        return category.compareTo(o);
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+
+    public int getLength() {
+        return length;
+    }
+
+
+    public ArrayList<Card> getContent() {
+        return content;
+    }
+
+
+    
     
 }
